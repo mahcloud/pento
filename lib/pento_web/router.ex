@@ -17,13 +17,6 @@ defmodule PentoWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", PentoWeb do
-    pipe_through :browser
-
-    live "/", PageLive, :index
-    live "/guess", WrongLive
-  end
-
   # Other scopes may use custom stacks.
   # scope "/api", PentoWeb do
   #   pipe_through :api
@@ -63,6 +56,8 @@ defmodule PentoWeb.Router do
   scope "/", PentoWeb do
     pipe_through [:browser, :require_authenticated_user]
 
+    live "/", PageLive, :index
+    live "/guess", WrongLive
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
     get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
