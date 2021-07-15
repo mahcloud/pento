@@ -36,38 +36,6 @@ defmodule Pento.Accounts.User do
     |> validate_password(opts)
   end
 
-  defp validate_email(changeset) do
-    changeset
-    |> validate_required([:email])
-    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
-    |> validate_length(:email, max: 160)
-    |> unsafe_validate_unique(:email, Pento.Repo)
-    |> unique_constraint(:email)
-  end
-
-  defp validate_password(changeset, opts) do
-    changeset
-    |> validate_required([:password])
-    |> validate_length(:password, min: 12, max: 80)
-    # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
-    # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
-    # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
-    |> maybe_hash_password(opts)
-  end
-
-  defp maybe_hash_password(changeset, opts) do
-    hash_password? = Keyword.get(opts, :hash_password, true)
-    password = get_change(changeset, :password)
-
-    if hash_password? && password && changeset.valid? do
-      changeset
-      |> put_change(:hashed_password, Bcrypt.hash_pwd_salt(password))
-      |> delete_change(:password)
-    else
-      changeset
-    end
-  end
-
   @doc """
   A user changeset for changing the email.
 
@@ -120,7 +88,6 @@ defmodule Pento.Accounts.User do
       when is_binary(hashed_password) and byte_size(password) > 0 do
     Bcrypt.verify_pass(password, hashed_password)
   end
-
   def valid_password?(_, _) do
     Bcrypt.no_user_verify()
     false
@@ -134,6 +101,42 @@ defmodule Pento.Accounts.User do
       changeset
     else
       add_error(changeset, :current_password, "is not valid")
+    end
+  end
+
+  ###
+  ### PRIVATE
+  ###
+
+  defp validate_email(changeset) do
+    changeset
+    |> validate_required([:email])
+    |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
+    |> validate_length(:email, max: 160)
+    |> unsafe_validate_unique(:email, Pento.Repo)
+    |> unique_constraint(:email)
+  end
+
+  defp validate_password(changeset, opts) do
+    changeset
+    |> validate_required([:password])
+    |> validate_length(:password, min: 12, max: 80)
+    # |> validate_format(:password, ~r/[a-z]/, message: "at least one lower case character")
+    # |> validate_format(:password, ~r/[A-Z]/, message: "at least one upper case character")
+    # |> validate_format(:password, ~r/[!?@#$%^&*_0-9]/, message: "at least one digit or punctuation character")
+    |> maybe_hash_password(opts)
+  end
+
+  defp maybe_hash_password(changeset, opts) do
+    hash_password? = Keyword.get(opts, :hash_password, true)
+    password = get_change(changeset, :password)
+
+    if hash_password? && password && changeset.valid? do
+      changeset
+      |> put_change(:hashed_password, Bcrypt.hash_pwd_salt(password))
+      |> delete_change(:password)
+    else
+      changeset
     end
   end
 end
