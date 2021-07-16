@@ -1,3 +1,17 @@
+<style>
+  .progress-bar-background {
+    position: relative;
+    height: 20px;
+    width: 200px;
+    background: grey;
+  }
+  .progress-bar {
+    position: absolute;
+    height: 20px;
+    background: blue;
+  }
+</style>
+</style>
 <h2><%= @title %></h2>
 
 <%= f = form_for @changeset, "#",
@@ -22,6 +36,11 @@
   <%= number_input f, :sku %>
   <%= error_tag f, :sku %>
 
+  <%= for entry <- @uploads.image.entries do %>
+    <div class="progress-bar-background">
+      <div class="progress-bar" style="width: <%= entry.progress * 2 %>px"></div>
+    </div>
+  <% end %>
   <%= live_file_input @uploads.image %>
   <%= hidden_input f, :image_upload %>
 
