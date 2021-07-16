@@ -32,6 +32,13 @@
   </li>
 
 </ul>
+<article class="column">
+  <img
+    alt="product image"
+    src="<%=Routes.static_path(@socket, @product.image_upload || "/images/default-thumbnail.jpg")%>"
+    width="200"
+  >
+</article>
 
 <span><%= live_patch "Edit", to: Routes.product_show_path(@socket, :edit, @product), class: "button" %></span>
 <span><%= live_redirect "Back", to: Routes.product_index_path(@socket, :index) %></span>
