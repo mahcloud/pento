@@ -20,7 +20,7 @@ defmodule PentoWeb.ProductLive.FormComponent do
       |> Catalog.change_product(product_params)
       |> Map.put(:action, :validate)
 
-    {:noreply, assign(socket, :changeset, changeset)}
+    {:noreply, socket |> assign(:changeset, changeset)}
   end
 
   def handle_event("save", %{"product" => product_params}, socket) do
@@ -34,9 +34,8 @@ defmodule PentoWeb.ProductLive.FormComponent do
          socket
          |> put_flash(:info, "Product updated successfully")
          |> push_redirect(to: socket.assigns.return_to)}
-
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, :changeset, changeset)}
+        {:noreply, socket |> assign(:changeset, changeset)}
     end
   end
 
@@ -47,9 +46,8 @@ defmodule PentoWeb.ProductLive.FormComponent do
          socket
          |> put_flash(:info, "Product created successfully")
          |> push_redirect(to: socket.assigns.return_to)}
-
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply, socket |> assign(changeset: changeset)}
     end
   end
 end
