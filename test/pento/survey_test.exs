@@ -1,19 +1,21 @@
 defmodule Pento.SurveyTest do
   use Pento.DataCase
 
-  alias Pento.Survey
+  alias Pento.{Accounts, Catalog, Survey}
 
   describe "demographics" do
     alias Pento.Survey.Demographic
 
-    @valid_attrs %{gender: "some gender", year_of_birth: 42}
-    @update_attrs %{gender: "some updated gender", year_of_birth: 43}
+    @valid_attrs %{gender: "other", year_of_birth: 1942}
+    @update_attrs %{gender: "prefer not to say", year_of_birth: 1943}
     @invalid_attrs %{gender: nil, year_of_birth: nil}
 
     def demographic_fixture(attrs \\ %{}) do
+      {:ok, user} = Accounts.register_user(%{email: "test@test.com", password: "abcdef123456"})
       {:ok, demographic} =
         attrs
         |> Enum.into(@valid_attrs)
+        |> Map.put(:user_id, user.id)
         |> Survey.create_demographic()
 
       demographic
@@ -30,20 +32,22 @@ defmodule Pento.SurveyTest do
     end
 
     test "create_demographic/1 with valid data creates a demographic" do
-      assert {:ok, %Demographic{} = demographic} = Survey.create_demographic(@valid_attrs)
-      assert demographic.gender == "some gender"
-      assert demographic.year_of_birth == 42
+      {:ok, user} = Accounts.register_user(%{email: "test2@test.com", password: "abcdef123456"})
+      assert {:ok, %Demographic{} = demographic} = Survey.create_demographic(@valid_attrs |> Map.put(:user_id, user.id))
+      assert demographic.gender == "other"
+      assert demographic.year_of_birth == 1942
     end
 
     test "create_demographic/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Survey.create_demographic(@invalid_attrs)
+      {:ok, user} = Accounts.register_user(%{email: "test2@test.com", password: "abcdef123456"})
+      assert {:error, %Ecto.Changeset{}} = Survey.create_demographic(@invalid_attrs |> Map.put(:user_id, user.id))
     end
 
     test "update_demographic/2 with valid data updates the demographic" do
       demographic = demographic_fixture()
       assert {:ok, %Demographic{} = demographic} = Survey.update_demographic(demographic, @update_attrs)
-      assert demographic.gender == "some updated gender"
-      assert demographic.year_of_birth == 43
+      assert demographic.gender == "prefer not to say"
+      assert demographic.year_of_birth == 1943
     end
 
     test "update_demographic/2 with invalid data returns error changeset" do
@@ -67,14 +71,18 @@ defmodule Pento.SurveyTest do
   describe "ratings" do
     alias Pento.Survey.Rating
 
-    @valid_attrs %{stars: 42}
-    @update_attrs %{stars: 43}
+    @valid_attrs %{stars: 2}
+    @update_attrs %{stars: 3}
     @invalid_attrs %{stars: nil}
 
     def rating_fixture(attrs \\ %{}) do
+      {:ok, user} = Accounts.register_user(%{email: "test@test.com", password: "abcdef123456"})
+      {:ok, product} = Catalog.create_product(%{description: "test", name: "test", sku: 1, unit_price: 1})
       {:ok, rating} =
         attrs
         |> Enum.into(@valid_attrs)
+        |> Map.put(:product_id, product.id)
+        |> Map.put(:user_id, user.id)
         |> Survey.create_rating()
 
       rating
@@ -91,18 +99,22 @@ defmodule Pento.SurveyTest do
     end
 
     test "create_rating/1 with valid data creates a rating" do
-      assert {:ok, %Rating{} = rating} = Survey.create_rating(@valid_attrs)
-      assert rating.stars == 42
+      {:ok, user} = Accounts.register_user(%{email: "test2@test.com", password: "abcdef123456"})
+      {:ok, product} = Catalog.create_product(%{description: "test2", name: "test2", sku: 2, unit_price: 2})
+      assert {:ok, %Rating{} = rating} = Survey.create_rating(@valid_attrs |> Map.put(:user_id, user.id) |> Map.put(:product_id, product.id))
+      assert rating.stars == 2
     end
 
     test "create_rating/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Survey.create_rating(@invalid_attrs)
+      {:ok, user} = Accounts.register_user(%{email: "test2@test.com", password: "abcdef123456"})
+      {:ok, product} = Catalog.create_product(%{description: "test2", name: "test2", sku: 2, unit_price: 2})
+      assert {:error, %Ecto.Changeset{}} = Survey.create_rating(@invalid_attrs |> Map.put(:user_id, user.id) |> Map.put(:product_id, product.id))
     end
 
     test "update_rating/2 with valid data updates the rating" do
       rating = rating_fixture()
       assert {:ok, %Rating{} = rating} = Survey.update_rating(rating, @update_attrs)
-      assert rating.stars == 43
+      assert rating.stars == 3
     end
 
     test "update_rating/2 with invalid data returns error changeset" do

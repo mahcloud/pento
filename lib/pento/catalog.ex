@@ -22,6 +22,20 @@ defmodule Pento.Catalog do
   end
 
   @doc """
+  Returns the list of products with a specific user's ratings.
+
+  ## Examples
+
+      iex> list_products(%Pento.Accounts.User{})
+      [%Product{}, ...]
+
+  """
+  def list_products_with_user_ratings(user) do
+    Product.Query.with_user_ratings(user)
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single product.
 
   Raises `Ecto.NoResultsError` if the Product does not exist.

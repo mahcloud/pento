@@ -2,6 +2,7 @@ defmodule Pento.Survey.Demographic do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Pento.Constants
   alias Peno.Accounts.User
 
   schema "demographics" do
@@ -18,8 +19,8 @@ defmodule Pento.Survey.Demographic do
     demographic
     |> cast(attrs, [:gender, :year_of_birth, :user_id])
     |> validate_required([:gender, :year_of_birth, :user_id])
-    |> validate_inclusion(:gender, ["male", "female", "other", "prefer not to say"])
-    |> validate_inclusion(:year_of_birth, 1900..Date.utc_today.year)
+    |> validate_inclusion(:gender, Constants.genders())
+    |> validate_inclusion(:year_of_birth, Constants.birth_years())
     |> unique_constraint(:user_id)
   end
 end

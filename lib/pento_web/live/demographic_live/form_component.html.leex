@@ -1,0 +1,13 @@
+<%= f = form_for @changeset, "#",
+  phx_submit: "save",
+  id: "demographic-form"%>
+  <%= label f, :gender %>
+  <%= select f, :gender, [nil] ++ Pento.Constants.genders() %>
+  <%= error_tag f, :gender %>
+  <%= label f, :year_of_birth %>
+  <%= select f, :year_of_birth, [nil] ++ Enum.reverse(Pento.Constants.birth_years())%>
+  <%= error_tag f, :year_of_birth %>
+  <%= hidden_input f, :user_id %>
+  <div/>
+  <%= submit "Save", phx_disable_with: "Saving..." %>
+</form>

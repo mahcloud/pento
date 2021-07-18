@@ -69,6 +69,7 @@ defmodule PentoWeb.Router do
     live "/products/:id/show/edit", ProductLive.Show, :edit
 
     live "/guess", WrongLive
+    live "/survey", SurveyLive, :index
 
     get "/users/settings", UserSettingsController, :edit
     put "/users/settings", UserSettingsController, :update
