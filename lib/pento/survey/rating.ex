@@ -2,6 +2,7 @@ defmodule Pento.Survey.Rating do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Pento.Constants
   alias Pento.Catalog.Product
   alias Pento.Accounts.User
 
@@ -18,7 +19,7 @@ defmodule Pento.Survey.Rating do
     rating
     |> cast(attrs, [:stars, :user_id, :product_id])
     |> validate_required([:stars, :user_id, :product_id])
-    |> validate_inclusion(:stars, 1..5)
+    |> validate_inclusion(:stars, Constants.stars())
     |> unique_constraint(:product_id, name: :index_ratings_on_user_product)
   end
 end

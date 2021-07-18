@@ -1,6 +1,9 @@
 <%= if @mode == :view do %>
   <section>
-    <h3>Demographics</h3>
+    <h3>
+      Demographics
+      <i class='fas fa-check survey'></i>
+    </h3>
     <div>Gender: <%= @demographic.gender %></div>
     <div>Year of birth: <%= @demographic.year_of_birth %></div>
     <button phx-target="<%= @myself %>" phx-click="switch-mode" phx-value-mode="form">Change</button>

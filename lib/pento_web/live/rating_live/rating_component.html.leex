@@ -1,4 +1,30 @@
+<style>
+	i.fa-star {
+		color: gold;
+	}
+	i.far.fa-star {
+		color: gray;
+		opacity: 0.5;
+	}
+	i.fas.fa-star:hover {
+		opacity: 0.8;
+	}
+	i.far.fa-star:hover {
+		opacity: 1;
+	}
+</style>
 <h4>
-	<%= @product.name%>:
-	<%= raw render_rating_stars(@rating) %>
+	<%= @product.name %>:
+	<section class="row">
+		<%= for {_star, index} <- Enum.with_index(Pento.Constants.stars()) do %>
+			<i
+				class="<%= get_star_classes(%{index: index, rating: @rating}) %>"
+				phx-click="rate"
+				phx-target="<%= @myself %>"
+				phx-value-product_id="<%= @product.id %>"
+				phx-value-stars="<%= index + 1 %>"
+			>
+			</i>
+		<% end %>
+	</section>
 </h4>
