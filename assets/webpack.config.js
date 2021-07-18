@@ -28,6 +28,16 @@ module.exports = (env, options) => {
     module: {
       rules: [
         {
+          test: /\.(woff(2)?|eot|ttf|otf|svg)?(\?.*$|$)/,
+          use: [{
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+              outputPath: '../fonts'
+            }
+          }]
+        },
+        {
           test: /\.js$/,
           exclude: /node_modules/,
           use: {
