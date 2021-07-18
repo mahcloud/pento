@@ -94,6 +94,24 @@ defmodule Pento.Survey do
   end
 
   @doc """
+  Validates demographic changeset.
+
+  ## Examples
+
+      iex> validate_demographic(demographic, %{field: new_value})
+      %Ecto.Changeset{}
+
+      iex> validate_demographic(demographic, %{field: bad_value})
+      %Ecto.Changeset{}
+
+  """
+  def validate_demographic(%Demographic{} = demographic, attrs) do
+    demographic
+    |> Demographic.changeset(attrs)
+    |> Map.put(:action, :validate)
+  end
+
+  @doc """
   Deletes a demographic.
 
   ## Examples

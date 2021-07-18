@@ -10,6 +10,12 @@ defmodule PentoWeb.DemographicLive.FormComponent do
       |> save_demographic(demographic_params)
     }
   end
+  def handle_event("switch-mode", %{"mode" => "form"}, socket) do
+    {:noreply, socket |> assign(:mode, :form)}
+  end
+  def handle_event("switch-mode", %{"mode" => "view"}, socket) do
+    {:noreply, socket |> assign(:mode, :view)}
+  end
 
   def update(assigns, socket) do
     {:ok,
@@ -30,8 +36,12 @@ defmodule PentoWeb.DemographicLive.FormComponent do
   defp assign_demographic(%{assigns: %{demographic: nil, user: user}} = socket) do
     socket
     |> assign(:demographic, %Demographic{user_id: user.id})
+    |> assign(:mode, :form)
   end
-  defp assign_demographic(%{assigns: %{demographic: _demographic}} = socket), do: socket
+  defp assign_demographic(%{assigns: %{demographic: _demographic}} = socket) do
+    socket
+    |> assign(:mode, :view)
+  end
 
   defp save_demographic(%{assigns: %{demographic: %{id: nil}}} = socket, params) do
     case Survey.create_demographic(params) do
@@ -46,7 +56,7 @@ defmodule PentoWeb.DemographicLive.FormComponent do
     case Survey.update_demographic(original_demographic, params) do
       {:ok, demographic} ->
         send(self(), {:updated_demographic, demographic})
-        socket
+        socket |> assign(:mode, :view)
       {:error, %Ecto.Changeset{} = changeset} ->
         socket |> assign(changeset: changeset)
     end
