@@ -1,5 +1,6 @@
 <%= f = form_for @changeset, "#",
   phx_submit: "save",
+  phx_target: @myself,
   id: "demographic-form"%>
   <%= label f, :gender %>
   <%= select f, :gender, [nil] ++ Pento.Constants.genders() %>
