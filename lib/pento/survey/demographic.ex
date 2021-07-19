@@ -3,13 +3,12 @@ defmodule Pento.Survey.Demographic do
   import Ecto.Changeset
 
   alias Pento.Constants
-  alias Peno.Accounts.User
 
   schema "demographics" do
     field :gender, :string
     field :year_of_birth, :integer
 
-    belongs_to :user, User
+    belongs_to :user, Peno.Accounts.User
 
     timestamps()
   end

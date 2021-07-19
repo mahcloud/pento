@@ -2,7 +2,6 @@ defmodule PentoWeb.RatingLive.RatingComponent do
   use PentoWeb, :live_component
 
 	alias Pento.Survey
-	alias Pento.Survey.Rating
 
 	def handle_event("rate", %{"stars" => stars}, %{assigns: %{product: product, product_index: product_index, rating: %{id: nil} = rating}} = socket) do
 		case Survey.create_rating(rating |> Map.put(:stars, stars)) do
@@ -36,7 +35,7 @@ defmodule PentoWeb.RatingLive.RatingComponent do
 	def get_star_classes(%{index: index, rating: %{stars: stars}}) when index >= stars do
 		"far fa-star"
 	end
-	def get_star_classes(%{index: index, rating: %{stars: stars}}) do
+	def get_star_classes(_params) do
 		"fas fa-star"
 	end
 

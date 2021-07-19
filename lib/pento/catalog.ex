@@ -26,12 +26,42 @@ defmodule Pento.Catalog do
 
   ## Examples
 
-      iex> list_products(%Pento.Accounts.User{})
+      iex> list_products_with_user_ratings(%Pento.Accounts.User{})
       [%Product{}, ...]
 
   """
   def list_products_with_user_ratings(user) do
     Product.Query.with_user_ratings(user)
+    |> Repo.all()
+  end
+
+  @doc """
+  Returns the list of products with a aggregated user ratings
+
+  ## Examples
+
+      iex> list_products_with_average_ratings()
+      [%Product{}, ...]
+
+  """
+  def list_products_with_average_ratings(params \\ %{}) do
+    query = Product.Query.with_average_ratings()
+    |> Product.Query.join_users()
+    |> Product.Query.join_demographics()
+
+    list_products_with_average_ratings(query, params)
+  end
+  def list_products_with_average_ratings(query, %{age_group_filter: filter} = filters) do
+    query = query
+    |> Product.Query.filter_by_age_group(filter)
+
+    filters = filters
+    |> Map.delete(:age_group_filter)
+
+    list_products_with_average_ratings(query, filters)
+  end
+  def list_products_with_average_ratings(query, _filter) do
+    query
     |> Repo.all()
   end
 
