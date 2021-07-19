@@ -21,7 +21,12 @@ defmodule PentoWeb.SurveyResultsLive do
 		}
 	end
 
-	defp assign_age_group_filter(socket), do: assign_age_group_filter(socket, "all")
+	defp assign_age_group_filter(%{assigns: %{age_group_filter: age_group_filter}} = socket) do
+		assign_age_group_filter(socket, age_group_filter)
+	end
+	defp assign_age_group_filter(socket) do
+		assign_age_group_filter(socket, "all")
+	end
 	defp assign_age_group_filter(socket, filter) do
 		socket
 		|> assign(:age_group_filter, filter)
@@ -73,8 +78,8 @@ defmodule PentoWeb.SurveyResultsLive do
 
 	defp convert_age_filter("all"), do: nil
 	defp convert_age_filter("18 and under"), do: {nil, get_birth_year(18)}
-	defp convert_age_filter("18 to 25"), do: {get_birth_year(18), get_birth_year(25)}
-	defp convert_age_filter("25 to 35"), do: {get_birth_year(25), get_birth_year(35)}
+	defp convert_age_filter("18 to 25"), do: {get_birth_year(25), get_birth_year(18)}
+	defp convert_age_filter("25 to 35"), do: {get_birth_year(35), get_birth_year(25)}
 	defp convert_age_filter("35 and up"), do: {get_birth_year(35), nil}
 
 	defp get_birth_year(year), do: DateTime.utc_now().year - year
