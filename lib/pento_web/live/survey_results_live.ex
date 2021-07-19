@@ -54,6 +54,10 @@ defmodule PentoWeb.SurveyResultsLive do
 		products = Catalog.list_products_with_average_ratings(%{
 			age_group_filter: convert_age_filter(age_group_filter),
 		})
+		|> case do
+		  [] -> Catalog.list_products_with_zero_ratings()
+			products -> products
+		end
 
 		socket
 		|> assign(:products, products)

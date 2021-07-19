@@ -59,4 +59,9 @@ defmodule Pento.Catalog.Product.Query do
     query
     |> preload(ratings: ^ratings_query)
   end
+
+  def with_zero_ratings(query \\ base()) do
+    query
+    |> select([p], {p.name, 0})
+  end
 end
